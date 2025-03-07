@@ -1,0 +1,222 @@
+:root{
+    --primary-color:#ee4d2d;    
+    --white-color:#fff;
+    --black-color:#000;
+    --text-color:#333;
+    --border-color:#dbdbdb;
+    --star-gold-color:#f0c14b;
+    --navbar-height:34px;
+    --header-height:120px;
+    --header-with-search-height: calc(var(var(--header-height)-var(var(--navbar-height))));
+}
+*{
+    box-sizing:inherit;
+}
+html{
+    font-size: 62.5%;
+    line-height: 1.6rem;
+    font-family: 'Rotobo',sans-serif;
+    box-sizing: border-box;
+}
+
+/* Responsive */
+
+/* căn màn hình khi co nhỏ lại cho vừa với các kích thước  */
+.grid{ 
+    width: 1400px;
+    max-width: 100%;
+    margin: 0 auto;
+
+}
+.grid__full-width{
+    width: 100%;
+
+}
+/* những thằng nằm chứa có trong thẻ class row này sẽ nằm nggang */
+.grid__row{
+    display: flex;
+    flex-wrap: wrap;
+    /* margin-left: -12px; */
+    margin-right: -12px;
+}
+
+/* TEST */
+.grid__column-2{
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 16.66667%;
+}
+.grid__column-2-4{
+    /* padding-left: 12px;
+    padding-right: 12px; */
+    width: 20%;
+    padding: 4px; /* padding ở đây là khoảng cách giữa các thằng con */
+}
+
+.grid__column-10{
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 83.33334%;
+}
+
+ /* Animation */
+@keyframes fadeIn {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+@keyframes growth{
+    from{
+        transform: scale(var(--growth-form));
+    }
+    to{
+        transform: scale(var(--growth-to));
+    }
+}
+/* Modal */
+
+.modal{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    animation: fadeIn linear 0.1s;
+}
+
+.modal__overlay{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+.modal__body{
+    --growth-form: 0.7s;
+    --growth-to: 1;
+    /* background-color: var(--white-color); */
+    /* border-radius: 5px; */
+    margin: auto;
+    position: relative;
+    z-index: 1;
+    animation: growth linear 0.1s;
+}
+/* BUTTON STYLE */
+.btn{
+    min-width: 122px;
+    height: 36px;
+    text-decoration: none;
+    border: none;
+    border-radius: 2px;
+    font-size: 1.5rem;
+    padding: 0 8px;
+    outline: none;
+    cursor: pointer;
+    color: var(--text-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.6rem;
+    /* background-color: #fe6433; */
+}
+
+.btn.btn--normal{
+    background-color: #66666638;
+}
+.btn.btn--size-s{
+    height: 30px;
+    font-size: 12px;
+}
+.btn.btn--primary{
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
+
+/* SELECTION */
+
+.select-input{
+    position: relative;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 2px;
+    min-width: 200px;
+    background-color: var(--white-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+}
+.select-input__label{
+    font-size: 1.4rem;
+}
+.select-input__icon{
+    font-size: 1.4rem;
+    color: rgb(131, 131, 131);
+    margin: 0 16px 0 8px;
+    position: relative;
+    top: 1px;
+}
+
+.select-input:hover .select-input__list{
+    display: block;
+}
+.select-input__list{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 25px;
+    border-radius: 2px;
+    background-color: var(--white-color);
+    padding: 10px 16px;
+    list-style: none;
+    display: none;
+}
+.select-input__link{
+    font-size: 1.4rem;
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+    padding: 7px 0px;
+}
+.select-input__link:hover{
+    color: var(--primary-color);
+}
+
+
+/* Pagination */
+.pagination{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+}
+.pagination-item{
+    margin: 0 12px;
+}
+.pagination-item--active .pagination-item__link{
+    background-color: var(--primary-color);
+    color:var(--white-color);
+}
+.pagination-item--active .pagination-item__link:hover{
+    background-color: var(--primary-color);
+
+}
+.pagination-item__link{
+    --height:30px;
+    display: block;
+    text-align: center;
+    line-height: var(--height);
+    border-radius: 2px;
+    text-decoration: none;
+    font-size: 2rem;
+    color: #939393;
+    min-width: 40px;
+    height: var(--height);
+}
+.pagination-item__icon{
+    
+}
