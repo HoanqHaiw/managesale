@@ -1,3 +1,4 @@
+<!-- GIỎ HÀNG PHÂN QUYỀN MEMBER -->
 <?php
 session_start();
 

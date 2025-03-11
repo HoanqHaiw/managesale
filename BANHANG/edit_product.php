@@ -1,3 +1,4 @@
+<!-- CHỈNH SỬA SANR PHẨM PHÂN QUYỀN ADMIN -->
 <?php
 session_start();
 require './php/db.php';

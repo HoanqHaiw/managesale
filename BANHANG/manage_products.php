@@ -1,3 +1,4 @@
+<!-- QUANR LÝ SẢN PHẨM PHÂN QUYỀN MEMBER -->
 <?php
 require './php/db.php'; // Kết nối database
 

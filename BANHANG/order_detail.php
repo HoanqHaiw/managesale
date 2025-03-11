@@ -1,3 +1,4 @@
+<!-- XEM CHI TIẾT ĐƠN HÀNG PHÂN QUYỀN MEMBER -->
 <?php
 session_start();
 require './php/db.php';
@@ -8,7 +9,7 @@ if (!isset($_GET['order_id'])) {
 }
 
 $order_id = intval($_GET['order_id']);
-$sql = "SELECT * FROM order_details od 
+$sql = "SELECT * FROM orderdetails od 
         JOIN products p ON od.product_id = p.product_id 
         WHERE od.order_id = ?";
 $stmt = $conn->prepare($sql);
@@ -34,7 +35,7 @@ $result = $stmt->get_result();
         </tr>
         <?php while ($row = $result->fetch_assoc()): ?>
         <tr>
-            <td><?php echo $row['productname']; ?></td>
+            <td><?php echo $row['product_name']; ?></td>
             <td><?php echo $row['quantity']; ?></td>
             <td><?php echo number_format($row['price'], 2); ?> VNĐ</td>
         </tr>
@@ -42,5 +43,3 @@ $result = $stmt->get_result();
     </table>
 </body>
 </html>
-
-<!-- PHÂN QUYỀN MEMBER -->

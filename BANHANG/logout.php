@@ -1,3 +1,4 @@
+<!-- ĐĂNG XUẤT -->
 <?php
 session_start(); // Bắt đầu phiên làm việc
 

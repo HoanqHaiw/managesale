@@ -1,3 +1,4 @@
+<!-- CATEGORY PHÂN QUYỀN MEMBER -->
 <?php
 session_start();
 include "./php/db.php";

@@ -1,3 +1,4 @@
+<!-- TRANG CHUR ĐƠN HANGF -->
 <?php
 session_start();
 include './php/db.php';

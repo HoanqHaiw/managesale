@@ -1,3 +1,4 @@
+<!-- XEM THOÔNG TIN ĐƠN HÀNG PHÂN QUQUYENF MEMBER -->
 <?php
 session_start();
 require './php/db.php';
@@ -36,13 +37,11 @@ $result = $stmt->get_result();
         <tr>
             <td><?php echo $row['order_id']; ?></td>
             <td><?php echo $row['order_date']; ?></td>
-            <td><?php echo number_format($row['total_price'], 2); ?> VNĐ</td>
-            <td><?php echo ucfirst($row['status']); ?></td>
+            <td><?php echo number_format($row['total_amount'], 2); ?> VNĐ</td>
+            <td><?php echo ucfirst($row['order_status']); ?></td>
             <td><a href="order_detail.php?order_id=<?php echo $row['order_id']; ?>">Xem</a></td>
         </tr>
         <?php endwhile; ?>
     </table>
 </body>
 </html>
-
-<!-- PHÂN QUYỀN MEMBER -->

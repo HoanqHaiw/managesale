@@ -1,3 +1,4 @@
+<!-- QUẢN LÝ NGUOIWF DÙNG PHÂN QUYỀN ADMIN -->
 <?php
 session_start();
 require './php/db.php';

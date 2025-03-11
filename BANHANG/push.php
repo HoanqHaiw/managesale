@@ -1,3 +1,4 @@
+<!-- THÊM SẢN PHẨM PHÂN QUYỀN ADMIN -->
 <?php
 require './php/db.php'; // Gọi file kết nối database
 

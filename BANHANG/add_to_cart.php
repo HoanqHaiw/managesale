@@ -1,3 +1,4 @@
+<!-- THÊM SẢN PHẨM VÀO GIỎ HÀNG PHÂN QUYỀN MEMBER -->
 <?php
 session_start();
 header("Content-Type: application/json");
