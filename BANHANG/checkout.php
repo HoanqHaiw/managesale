@@ -1,42 +1,95 @@
 <?php
 session_start();
-require './php/db.php';
+include './php/db.php';
 
-if (!isset($_SESSION['user_id'])) {
-    echo "<script>alert('Bạn cần đăng nhập để đặt hàng!'); window.location.href='login.php';</script>";
-    exit();
+if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+    header("Location: cart.php");
+    exit;
 }
 
-$user_id = $_SESSION['user_id'];
-$cart = $_SESSION['cart']; // Giỏ hàng lưu trong session
-$total_price = 0;
+$cartItems = $_SESSION['cart'];
+$totalPrice = array_sum(array_column($cartItems, 'total_price'));
 
-foreach ($cart as $item) {
-    $total_price += $item['price'] * $item['quantity'];
-}
+// Xử lý khi người dùng nhấn nút Thanh Toán
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $fullname = $_POST['fullname'];
+    $address = $_POST['address'];
+    $phone = $_POST['phone'];
+    $userId = $_SESSION['user_id'] ?? null;
 
-// Thêm đơn hàng vào bảng orders
-$sql = "INSERT INTO orders (user_id, total_price) VALUES (?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("id", $user_id, $total_price);
-$stmt->execute();
-$order_id = $stmt->insert_id;
-
-// Thêm chi tiết đơn hàng
-foreach ($cart as $item) {
-    $sql_detail = "INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql_detail);
-    $stmt->bind_param("iiid", $order_id, $item['product_id'], $item['quantity'], $item['price']);
+    // Thêm đơn hàng vào bảng `orders`
+    $stmt = $conn->prepare("INSERT INTO orders (user_id, fullname, address, phone, total_amount, order_status) VALUES (?, ?, ?, ?, ?, 'pending')");
+    $stmt->bind_param("isssd", $userId, $fullname, $address, $phone, $totalPrice);
     $stmt->execute();
+    $orderId = $stmt->insert_id;
+    $stmt->close();
+
+    // Thêm sản phẩm vào bảng `orderdetails`
+    $stmt = $conn->prepare("INSERT INTO orderdetails (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
+    foreach ($cartItems as $item) {
+        $stmt->bind_param("iiid", $orderId, $item['product_id'], $item['quantity'], $item['product_price']);
+        $stmt->execute();
+    }
+    $stmt->close();
+
+    // Xóa giỏ hàng
+    unset($_SESSION['cart']);
+
+    // Chuyển hướng đến trang thành công
+    header("Location: success.php");
+    exit;
 }
-
-// Xóa giỏ hàng sau khi đặt hàng thành công
-unset($_SESSION['cart']);
-
-echo "<script>alert('Đặt hàng thành công!'); window.location.href='orders.php';</script>";
 ?>
 
-<!-- Lấy thông tin giỏ hàng từ session.
-Tạo đơn hàng mới trong orders.
-Lưu chi tiết từng sản phẩm vào order_details.
-Xóa giỏ hàng sau khi đặt hàng thành công. -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán</title>
+    <link rel="stylesheet" href="/BANHANG/asset/css/cart.css">
+</head>
+<body>
+
+    <h1>Thanh Toán</h1>
+    
+    <h2>Thông Tin Đơn Hàng</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($cartItems as $item) : ?>
+            <tr>
+                <td><?= htmlspecialchars($item['product_name']) ?></td>
+                <td><?= number_format($item['product_price'], 0, ',', '.') ?> VND</td>
+                <td><?= $item['quantity'] ?></td>
+                <td><?= number_format($item['total_price'], 0, ',', '.') ?> VND</td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <p><strong>Tổng tiền: <?= number_format($totalPrice, 0, ',', '.') ?> VND</strong></p>
+
+    <h2>Thông Tin Khách Hàng</h2>
+    <form method="POST">
+        <label>Họ và tên:</label>
+        <input type="text" name="fullname" required>
+
+        <label>Địa chỉ:</label>
+        <input type="text" name="address" required>
+
+        <label>Số điện thoại:</label>
+        <input type="text" name="phone" required>
+
+        <button type="submit">Xác Nhận Thanh Toán</button>
+    </form>
+    <button class="homeButton" onclick="window.location.href='index.php'">Trở Về Trang Chủ</button>
+
+</body>
+</html>

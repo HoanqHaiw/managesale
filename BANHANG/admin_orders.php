@@ -51,3 +51,5 @@ $result = $conn->query($sql);
     </table>
 </body>
 </html>
+
+<!-- PHÂN QUYỀN ADMIN -->

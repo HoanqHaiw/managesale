@@ -17,13 +17,13 @@ if (session_status() === PHP_SESSION_NONE) {
                             <!-- HEADER QR CODE -->
 
                         <div class="header__qr">
-                            <img src="../img/5b6e787c2e5ee052.png" alt="QR code" class="header__qr-img">
+                            <img src="/BANHANG/asset/img/5b6e787c2e5ee052.png" alt="QR code" class="header__qr-img">
                             <div class="header__qr-apps">
                                 <a href="" class="header__qr-link">
-                                    <img src="../img/app1.png" alt="Google Play" class="header__qr-download-img">
+                                    <img src="/BANHANG/asset/img/app1.png" alt="Google Play" class="header__qr-download-img">
                                 </a>
                                 <a href="" class="header__qr-link">
-                                    <img src="../img/app_store.png" alt="App Store" class="header__qr-download-img">
+                                    <img src="/BANHANG/asset/img/app_store.png" alt="App Store" class="header__qr-download-img">
                                 </a>
                             </div>
                         </div>    
@@ -101,7 +101,7 @@ if (session_status() === PHP_SESSION_NONE) {
                             <ul class="header__navbar-user-menu">
                                 <?php if (isset($_SESSION["role"]) && $_SESSION["role"] == "admin"): ?>
                                     <li class="header__navbar-user-item"><a href="manage_products.php">Quản Lý Sản Phẩm</a></li>
-                                    <li class="header__navbar-user-item"><a href="manage_orders.php">Quản Lý Đơn Hàng</a></li>
+                                    <li class="header__navbar-user-item"><a href="admin_orders.php">Quản Lý Đơn Hàng</a></li>
                                     <li class="header__navbar-user-item"><a href="manage_users.php">Quản Lý Người Dùng</a></li>
                                     <li class="header__navbar-user-item"><a href="push.php">Quản Lý Thêm Sản Phẩm</a></li>
                                 <?php else: ?>

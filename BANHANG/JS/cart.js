@@ -1,54 +1,54 @@
-document.addEventListener("DOMContentLoaded", function () {
-    loadCart(); // Gọi hàm loadCart khi trang được tải
-
+document.addEventListener("DOMContentLoaded", function() {
     function loadCart() {
-        fetch("get_cart.php") // Gọi API lấy giỏ hàng từ database
+        fetch("cart.php?action=view")
             .then(response => response.json())
             .then(data => {
-                displayCart(data); // Hiển thị giỏ hàng
+                console.log("Dữ liệu giỏ hàng nhận được:", data); // Debug xem có dữ liệu không
+                let cartItems = document.getElementById("cartItems");
+                cartItems.innerHTML = "";
+                let total = 0;
+
+                if (data.length === 0) {
+                    cartItems.innerHTML = "<tr><td colspan='5'>Giỏ hàng trống</td></tr>";
+                    document.getElementById("totalPrice").textContent = "0 VNĐ";
+                    return;
+                }
+
+                data.forEach(item => {
+                    let row = `<tr>
+                        <td>${item.product_name}</td>
+                        <td>${item.product_price} VNĐ</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.total_price} VNĐ</td>
+                        <td><button class='removeItem' data-id='${item.product_id}'>Xóa</button></td>
+                    </tr>`;
+                    cartItems.innerHTML += row;
+                    total += parseInt(item.total_price);
+                });
+                document.getElementById("totalPrice").textContent = total + " VNĐ";
             })
-            .catch(error => console.error("Lỗi khi lấy giỏ hàng:", error));
+            .catch(error => console.error("Lỗi khi tải giỏ hàng:", error));
     }
 
-    function displayCart(cart) {
-        let cartTable = document.getElementById("cartItems");
-        let totalPrice = 0;
-
-        if (!cartTable) {
-            console.error("Lỗi: Không tìm thấy phần tử cartItems.");
-            return;
-        }
-
-        cartTable.innerHTML = cart.length ? "" : "<tr><td colspan='5'>Giỏ hàng trống</td></tr>";
-
-        cart.forEach((item, index) => {
-            let totalItemPrice = item.quantity * item.product_price;
-
-            let row = `
-                <tr>
-                    <td>${item.product_name}</td>
-                    <td>${item.product_price.toLocaleString()} VND</td>
-                    <td>${item.quantity}</td>
-                    <td>${totalItemPrice.toLocaleString()} VND</td>
-                    <td><button onclick="removeItem(${item.cart_id})">Xóa</button></td>
-                </tr>`;
-            cartTable.innerHTML += row;
-            totalPrice += totalItemPrice;
-        });
-
-        let totalElement = document.getElementById("totalPrice");
-        if (totalElement) {
-            totalElement.innerText = `${totalPrice.toLocaleString()} VND`;
-        }
-    }
-
-    window.removeItem = function (cart_id) {
-        fetch(`remove_from_cart.php?cart_id=${cart_id}`, { method: "GET" })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                loadCart();
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("removeItem")) {
+            let itemId = e.target.getAttribute("data-id");
+            fetch("cart.php?action=remove", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ item_id: itemId })
             })
-            .catch(error => console.error("Lỗi khi xóa sản phẩm:", error));
-    };
+            .then(() => loadCart());
+        }
+    });
+
+    loadCart();
+    // back về trang chủ
+    document.getElementById("homeButton").addEventListener("click", function () {
+        window.location.href = "index.php";
+    });
+    // thanh toán
+    document.getElementById("checkoutButton").addEventListener("click", function () {
+        window.location.href = "checkout.php";
+    });
 });

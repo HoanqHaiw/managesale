@@ -1,9 +1,65 @@
 <?php
 session_start();
-echo "<pre>";
-print_r($_SESSION);
-echo "</pre>";
+
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
+// Xử lý thêm sản phẩm vào giỏ hàng
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if ($data["action"] == "add") {
+        $productId = $data["product_id"];
+        $productName = $data["product_name"];
+        $productPrice = $data["product_price"];
+        $quantity = intval($data["quantity"]);
+
+        $found = false;
+        foreach ($_SESSION['cart'] as &$item) {
+            if ($item["product_id"] == $productId) {
+                $item["quantity"] += $quantity;
+                $item["total_price"] = $item["product_price"] * $item["quantity"];
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $_SESSION['cart'][] = [
+                "product_id" => $productId,
+                "product_name" => $productName,
+                "product_price" => $productPrice,
+                "quantity" => $quantity,
+                "total_price" => $productPrice * $quantity
+            ];
+        }
+
+        echo json_encode(["message" => "Sản phẩm đã được thêm vào giỏ hàng!"]);
+        exit;
+    }
+}
+
+// Xem giỏ hàng
+if (isset($_GET["action"]) && $_GET["action"] == "view") {
+    echo json_encode($_SESSION['cart']);
+    exit;
+}
+
+// Xóa sản phẩm khỏi giỏ hàng
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_GET["action"]) && $_GET["action"] == "remove") {
+    $data = json_decode(file_get_contents("php://input"), true);
+    $_SESSION['cart'] = array_filter($_SESSION['cart'], function($item) use ($data) {
+        return $item["product_id"] != $data["item_id"];
+    });
+
+    echo json_encode(["message" => "Sản phẩm đã được xóa!"]);
+    exit;
+}
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -30,22 +86,7 @@ echo "</pre>";
     
     <!-- <p><strong>Tổng tiền: <span id="totalPriceStrong">0</span> VND</strong></p> -->
 
-
-    <!-- Form nhập thông tin thanh toán -->
-    <h2>Thông Tin Thanh Toán</h2>
-    <form id="paymentForm">
-        <label for="fullname">Họ và tên:</label>
-        <input type="text" id="fullname" required><br><br>
-
-        <label for="address">Địa chỉ:</label>
-        <input type="text" id="address" required><br><br>
-
-        <label for="phone">Số điện thoại:</label>
-        <input type="text" id="phone" required><br><br>
-
-        <button type="submit">Thanh Toán</button>
-    </form>
-
+    <button id="checkoutButton">Thanh toán</button>
     <br>
     <!-- Nút quay lại trang chủ -->
     <button id="homeButton">Quay lại trang chủ</button>

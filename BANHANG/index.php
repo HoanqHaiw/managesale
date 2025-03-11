@@ -69,7 +69,7 @@ $result = $conn->query($sql);
 <?php if (isset($_SESSION["role"]) && $_SESSION["role"] == "admin"): ?>
     <!-- Hiển thị menu cho admin -->
     <button class="home-filter__btn btn btn--primary" onclick="location.href='manage_products.php'">Quản Lý Sản Phẩm</button>
-    <button class="home-filter__btn btn btn--primary" onclick="location.href='admin_update_order'">Quản Lý Đơn Hàng</button>
+    <button class="home-filter__btn btn btn--primary" onclick="location.href='admin_orders.php'">Quản Lý Đơn Hàng</button>
     <button class="home-filter__btn btn btn--primary" onclick="location.href='manage_users.php'">Quản Lý Người Dùng</button>
     <button class="home-filter__btn btn btn--primary" onclick="location.href='push.php'">Quản Lý Thêm Sản Phẩm</button>
 <?php else: ?>
@@ -110,7 +110,7 @@ $result = $conn->query($sql);
                             <div class="grid__row">
                             <?php while ($row = $result->fetch_assoc()) { ?>
     <div class="grid__column-2-4">
-        <a class="home-product-item" href="product.php?id=<?php echo $row['product_id']; ?>">
+    <a class="home-product-item" href="product.php?id=<?php echo htmlspecialchars($row['product_id']); ?>" data-id="<?php echo $row['product_id']; ?>">
             <div class="home-product-item__img" style="background-image: url('<?php echo $row['image']; ?>');">
                 <h4 class="home-product-item__name"><?php echo $row['product_name']; ?></h4>
                 <div class="home-product-item__price"> 
