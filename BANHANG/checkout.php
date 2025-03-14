@@ -1,15 +1,16 @@
-<!-- TRANG THANH TOÁN PHÂN QUYỀN MEMBER -->
 <?php
 session_start();
 include './php/db.php';
 
-if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
-    header("Location: cart.php");
-    exit;
+if (!isset($_GET['product_id']) || !isset($_GET['quantity']) || !isset($_GET['product_price'])) {
+    die("❌ Thiếu thông tin sản phẩm để thanh toán.");
 }
 
-$cartItems = $_SESSION['cart'];
-$totalPrice = array_sum(array_column($cartItems, 'total_price'));
+$product_id = intval($_GET['product_id']);
+$product_name = $_GET['product_name'];
+$product_price = floatval($_GET['product_price']);
+$quantity = intval($_GET['quantity']);
+$totalPrice = $product_price * $quantity;
 
 // Xử lý khi người dùng nhấn nút Thanh Toán
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -27,14 +28,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Thêm sản phẩm vào bảng `orderdetails`
     $stmt = $conn->prepare("INSERT INTO orderdetails (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
-    foreach ($cartItems as $item) {
-        $stmt->bind_param("iiid", $orderId, $item['product_id'], $item['quantity'], $item['product_price']);
-        $stmt->execute();
-    }
+    $stmt->bind_param("iiid", $orderId, $product_id, $quantity, $product_price);
+    $stmt->execute();
     $stmt->close();
-
-    // Xóa giỏ hàng
-    unset($_SESSION['cart']);
 
     // Chuyển hướng đến trang thành công
     header("Location: success.php");
@@ -65,14 +61,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($cartItems as $item) : ?>
             <tr>
-                <td><?= htmlspecialchars($item['product_name']) ?></td>
-                <td><?= number_format($item['product_price'], 0, ',', '.') ?> VND</td>
-                <td><?= $item['quantity'] ?></td>
-                <td><?= number_format($item['total_price'], 0, ',', '.') ?> VND</td>
+                <td><?= htmlspecialchars($product_name) ?></td>
+                <td><?= number_format($product_price, 0, ',', '.') ?> VND</td>
+                <td><?= $quantity ?></td>
+                <td><?= number_format($totalPrice, 0, ',', '.') ?> VND</td>
             </tr>
-            <?php endforeach; ?>
         </tbody>
     </table>
     <p><strong>Tổng tiền: <?= number_format($totalPrice, 0, ',', '.') ?> VND</strong></p>

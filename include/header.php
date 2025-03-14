@@ -50,7 +50,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     <ul class="header__notify-list">
                                         <li class="header__notify-item header__notify-item--viewed">
                                             <a href="" class="header__notify-link">
-                                            <img src="../img/sp1.png" alt="" class="header__notify-img">
+                                            <img src="/BANHANG/asset/img/sp2.png" alt="" class="header__notify-img">
                                               <div class="header__notify-info">
                                                 <span class="header__notify-name">Mỹ Phẩm Chính Hãng</span>
                                                 <span class="header__notify-descriotion"> Mô Tả Mỹ Phẩm Chính Hãng</span>
@@ -59,7 +59,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                         </li>
                                         <li class="header__notify-item header__notify-item--viewed">
                                             <a href="" class="header__notify-link">
-                                            <img src="../img/sp4.png" alt="" class="header__notify-img">
+                                            <img src="/BANHANG/asset/img/sp3.png" alt="" class="header__notify-img">
                                               <div class="header__notify-info">
                                                 <span class="header__notify-name">Mỹ Phẩm Chính Hãng</span>
                                                 <span class="header__notify-descriotion"> Mô Tả Mỹ Phẩm Chính Hãng</span>
@@ -68,7 +68,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                         </li>
                                         <li class="header__notify-item">
                                             <a href="" class="header__notify-link">
-                                            <img src="../img/sp3.png" alt="" class="header__notify-img">
+                                            <img src="/BANHANG/asset/img/sp4.png" alt="" class="header__notify-img">
                                               <div class="header__notify-info">
                                                 <span class="header__notify-name">Mỹ Phẩm Chính Hãng</span>
                                                 <span class="header__notify-descriotion"> Mô Tả Mỹ Phẩm Chính Hãng</span>

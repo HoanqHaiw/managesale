@@ -54,23 +54,33 @@ if ($result->num_rows > 0) {
                             <input type="number" id="quantity" name="quantity" min="1" value="1" class="product__quantity">
                         </div>
                         <div class="product__buttons">
-                            <?php if (!isset($_SESSION["role"]) || $_SESSION["role"] != "admin"): ?>
-                                <button id="buyNow"
-                                        class="btn btn--buy"
-                                        data-id="<?php echo $product['product_id']; ?>"
-                                        data-name="<?php echo htmlspecialchars($product['product_name']); ?>"
-                                        data-price="<?php echo $product['product_price']; ?>">
-                                        Mua Ngay
-                                </button>
-                                <button id="addToCart"
-                                        class="btn btn--add-cart"
-                                        data-id="<?php echo $product['product_id']; ?>"
-                                        data-name="<?php echo htmlspecialchars($product['product_name']); ?>"
-                                        data-price="<?php echo $product['product_price']; ?>">
-                                    <i class="fa-solid fa-cart-shopping"></i> Thêm vào Giỏ Hàng
-                                </button>
-                            <?php endif; ?>
-                        </div>
+    <?php if (!isset($_SESSION["role"]) || $_SESSION["role"] != "admin"): ?>
+        <?php if (isset($_SESSION["role"]) && $_SESSION["role"] == "member"): ?>
+            <!-- Nếu đã đăng nhập, cho phép mua ngay -->
+            <button id="buyNow"
+                    class="btn btn--buy"
+                    data-id="<?php echo $product['product_id']; ?>"
+                    data-name="<?php echo htmlspecialchars($product['product_name']); ?>"
+                    data-price="<?php echo $product['product_price']; ?>">
+                Mua Ngay
+            </button>
+        <?php else: ?>
+            <!-- Nếu chưa đăng nhập, hiển thị thông báo yêu cầu đăng nhập -->
+            <button class="btn btn--buy" onclick="requireLogin()">
+                Mua Ngay
+            </button>
+        <?php endif; ?>
+
+        <button id="addToCart"
+                class="btn btn--add-cart"
+                data-id="<?php echo $product['product_id']; ?>"
+                data-name="<?php echo htmlspecialchars($product['product_name']); ?>"
+                data-price="<?php echo $product['product_price']; ?>">
+            <i class="fa-solid fa-cart-shopping"></i> Thêm vào Giỏ Hàng
+        </button>
+    <?php endif; ?>
+</div>
+
                     </div>
                 </div>
             </div>

@@ -1,6 +1,9 @@
 <!-- GIỎ HÀNG PHÂN QUYỀN MEMBER -->
 <?php
 session_start();
+echo "<pre>";
+print_r($_SESSION['cart']);
+echo "</pre>";
 
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
