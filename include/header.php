@@ -105,7 +105,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     <li class="header__navbar-user-item"><a href="manage_users.php">Quản Lý Người Dùng</a></li>
                                     <li class="header__navbar-user-item"><a href="push.php">Quản Lý Thêm Sản Phẩm</a></li>
                                 <?php else: ?>
-                                    <li class="header__navbar-user-item"><a href="">Tài Khoản Của Tôi</a></li>
+                                    <li class="header__navbar-user-item"><a href="edit_profile.php">Tài Khoản Của Tôi</a></li>
                                     <li class="header__navbar-user-item"><a href="">Địa Chỉ Của Tôi</a></li>
                                     <li class="header__navbar-user-item"><a href="orders.php">Đơn Mua</a></li>
                                 <?php endif; ?>

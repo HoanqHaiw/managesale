@@ -38,13 +38,13 @@ $result = $stmt->get_result();
                             </h3>
                             <ul class="category-list">
                                 <li class="category-item">
-                                    <a href="category.php?category=Mỹ Phẩm" class="category-item__link">Mỹ Phẩm</a>
+                                    <a href="category.php?category=Quần" class="category-item__link">Quần</a>
                                 </li>
                                 <li class="category-item">
-                                    <a href="category.php?category=Kem Dưỡng Da" class="category-item__link">Kem Dưỡng Da</a>
+                                    <a href="category.php?category=Áo Đông" class="category-item__link">Áo Đông</a>
                                 </li>
                                 <li class="category-item">
-                                    <a href="category.php?category=Son Môi" class="category-item__link">Son Môi</a>
+                                    <a href="category.php?category=Ao" class="category-item__link">Áo</a>
                                 </li>
                             </ul>
                         </nav>

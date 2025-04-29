@@ -1,4 +1,3 @@
-<!-- TRANG CHUR ĐƠN HANGF -->
 <?php
 session_start();
 include './php/db.php';
@@ -22,8 +21,15 @@ if ($result->num_rows > 0) {
 } else {
     die("❌ Sản phẩm không tồn tại.");
 }
-?>
 
+// Lấy số lượng tồn kho từ bảng stock
+$stockStmt = $conn->prepare("SELECT quantity_in_stock FROM stock WHERE product_id = ?");
+$stockStmt->bind_param("i", $product_id);
+$stockStmt->execute();
+$stockResult = $stockStmt->get_result();
+$stock = $stockResult->fetch_assoc();
+$quantity_in_stock = $stock ? $stock['quantity_in_stock'] : 0;
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -49,37 +55,46 @@ if ($result->num_rows > 0) {
                         <p class="product__price">Giá: <span id="productPrice">
                             <?php echo number_format($product['product_price'], 0, ',', '.'); ?> VNĐ</span>
                         </p>
+
+                        <!-- Hiển thị số lượng còn lại -->
+                        <div class="product__stock">
+                            <p>Số lượng còn hàng: <strong><?php echo $quantity_in_stock; ?></strong></p>
+                        </div>
+
                         <div class="quantity_form">
                             <label for="quantity" style="font-size: 1.6rem;">Số Lượng:</label>
-                            <input type="number" id="quantity" name="quantity" min="1" value="1" class="product__quantity">
+                            <input type="number" id="quantity" name="quantity" min="1" value="1" max="<?php echo $quantity_in_stock; ?>" class="product__quantity">
                         </div>
-                        <div class="product__buttons">
-    <?php if (!isset($_SESSION["role"]) || $_SESSION["role"] != "admin"): ?>
-        <?php if (isset($_SESSION["role"]) && $_SESSION["role"] == "member"): ?>
-            <!-- Nếu đã đăng nhập, cho phép mua ngay -->
-            <button id="buyNow"
-                    class="btn btn--buy"
-                    data-id="<?php echo $product['product_id']; ?>"
-                    data-name="<?php echo htmlspecialchars($product['product_name']); ?>"
-                    data-price="<?php echo $product['product_price']; ?>">
-                Mua Ngay
-            </button>
-        <?php else: ?>
-            <!-- Nếu chưa đăng nhập, hiển thị thông báo yêu cầu đăng nhập -->
-            <button class="btn btn--buy" onclick="requireLogin()">
-                Mua Ngay
-            </button>
-        <?php endif; ?>
 
-        <button id="addToCart"
-                class="btn btn--add-cart"
-                data-id="<?php echo $product['product_id']; ?>"
-                data-name="<?php echo htmlspecialchars($product['product_name']); ?>"
-                data-price="<?php echo $product['product_price']; ?>">
-            <i class="fa-solid fa-cart-shopping"></i> Thêm vào Giỏ Hàng
-        </button>
-    <?php endif; ?>
-</div>
+                        <div class="product__buttons">
+                            <?php if (!isset($_SESSION["role"]) || $_SESSION["role"] != "admin"): ?>
+                                <?php if (isset($_SESSION["role"]) && $_SESSION["role"] == "member"): ?>
+                                    <!-- Nếu đã đăng nhập, cho phép mua ngay -->
+                                    <button id="buyNow"
+                                            class="btn btn--buy"
+                                            data-id="<?php echo $product['product_id']; ?>"
+                                            data-name="<?php echo htmlspecialchars($product['product_name']); ?>"
+                                            data-price="<?php echo $product['product_price']; ?>"
+                                            data-stock="<?php echo $quantity_in_stock; ?>">
+                                        Mua Ngay
+                                    </button>
+                                <?php else: ?>
+                                    <!-- Nếu chưa đăng nhập, hiển thị thông báo yêu cầu đăng nhập -->
+                                    <button class="btn btn--buy" onclick="requireLogin()">
+                                        Mua Ngay
+                                    </button>
+                                <?php endif; ?>
+
+                                <button id="addToCart"
+                                        class="btn btn--add-cart"
+                                        data-id="<?php echo $product['product_id']; ?>"
+                                        data-name="<?php echo htmlspecialchars($product['product_name']); ?>"
+                                        data-price="<?php echo $product['product_price']; ?>"
+                                        data-stock="<?php echo $quantity_in_stock; ?>">
+                                    <i class="fa-solid fa-cart-shopping"></i> Thêm vào Giỏ Hàng
+                                </button>
+                            <?php endif; ?>
+                        </div>
 
                     </div>
                 </div>

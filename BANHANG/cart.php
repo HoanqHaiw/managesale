@@ -1,56 +1,7 @@
-<!-- GIỎ HÀNG PHÂN QUYỀN MEMBER -->
 <?php
 session_start();
-echo "<pre>";
-print_r($_SESSION['cart']);
-echo "</pre>";
 
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
-}
-
-// Xử lý thêm sản phẩm vào giỏ hàng
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $data = json_decode(file_get_contents("php://input"), true);
-
-    if ($data["action"] == "add") {
-        $productId = $data["product_id"];
-        $productName = $data["product_name"];
-        $productPrice = $data["product_price"];
-        $quantity = intval($data["quantity"]);
-
-        $found = false;
-        foreach ($_SESSION['cart'] as &$item) {
-            if ($item["product_id"] == $productId) {
-                $item["quantity"] += $quantity;
-                $item["total_price"] = $item["product_price"] * $item["quantity"];
-                $found = true;
-                break;
-            }
-        }
-
-        if (!$found) {
-            $_SESSION['cart'][] = [
-                "product_id" => $productId,
-                "product_name" => $productName,
-                "product_price" => $productPrice,
-                "quantity" => $quantity,
-                "total_price" => $productPrice * $quantity
-            ];
-        }
-
-        echo json_encode(["message" => "Sản phẩm đã được thêm vào giỏ hàng!"]);
-        exit;
-    }
-}
-
-// Xem giỏ hàng
-if (isset($_GET["action"]) && $_GET["action"] == "view") {
-    echo json_encode($_SESSION['cart']);
-    exit;
-}
-
-// Xóa sản phẩm khỏi giỏ hàng
+// xoá sản phẩm khỏi giỏ hàng
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_GET["action"]) && $_GET["action"] == "remove") {
     $data = json_decode(file_get_contents("php://input"), true);
     $_SESSION['cart'] = array_filter($_SESSION['cart'], function($item) use ($data) {
@@ -60,7 +11,76 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_GET["action"]) && $_GET["act
     echo json_encode(["message" => "Sản phẩm đã được xóa!"]);
     exit;
 }
+
+// Khởi tạo giỏ hàng nếu chưa có
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
+// Hàm tìm sản phẩm trong giỏ hàng
+function findCartItem($productId) {
+    foreach ($_SESSION['cart'] as $index => $item) {
+        if ($item['product_id'] == $productId) {
+            return $index;
+        }
+    }
+    return -1;
+}
+
+// Xử lý các action
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+
+    switch ($action) {
+        case 'add':
+            $data = json_decode(file_get_contents('php://input'), true);
+            if ($data) {
+                $index = findCartItem($data['product_id']);
+                if ($index !== -1) {
+                    // Nếu sản phẩm đã có, cập nhật số lượng
+                    $_SESSION['cart'][$index]['quantity'] += $data['quantity'];
+                    $_SESSION['cart'][$index]['total_price'] = $_SESSION['cart'][$index]['quantity'] * $_SESSION['cart'][$index]['product_price'];
+                } else {
+                    // Thêm mới sản phẩm
+                    $_SESSION['cart'][] = [
+                        'product_id'   => $data['product_id'],
+                        'product_name' => $data['product_name'],
+                        'product_price'=> $data['product_price'],
+                        'quantity'     => $data['quantity'],
+                        'total_price'  => $data['product_price'] * $data['quantity'],
+                    ];
+                }
+                echo json_encode(['message' => 'Đã thêm vào giỏ hàng!']);
+            }
+            exit;
+
+        case 'view':
+            header('Content-Type: application/json');
+            echo json_encode($_SESSION['cart']);
+            exit;
+
+        case 'remove':
+            $data = json_decode(file_get_contents('php://input'), true);
+            if ($data) {
+                $index = findCartItem($data['item_id']);
+                if ($index !== -1) {
+                    array_splice($_SESSION['cart'], $index, 1);
+                }
+            }
+            echo json_encode(['message' => 'Đã xóa sản phẩm khỏi giỏ hàng']);
+            exit;
+
+        case 'buy_now':
+            // Tùy chỉnh nếu cần xử lý riêng cho mua ngay
+            break;
+
+        default:
+            echo json_encode(['message' => 'Action không hợp lệ']);
+            exit;
+    }
+}
 ?>
+
 
 
 

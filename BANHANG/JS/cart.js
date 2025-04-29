@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <td><button class='removeItem' data-id='${item.product_id}'>Xóa</button></td>
                     `;
                     cartItems.appendChild(row);
-                    total += parseInt(item.total_price);
+                    total += Number(item.total_price); // hoặc parseFloat cũng được
                 });
                 
 

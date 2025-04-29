@@ -217,6 +217,4 @@ html{
     min-width: 40px;
     height: var(--height);
 }
-.pagination-item__icon{
-    
-}
+/* Removed empty ruleset */

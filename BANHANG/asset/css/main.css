@@ -871,6 +871,9 @@
 .home-product{
     margin-bottom: 10px;
 }
+.product__stock{
+    font-size: 1.6rem;
+}
 .home-product-item{
     display: block;
     text-decoration: none;

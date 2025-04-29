@@ -31,6 +31,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("iiid", $orderId, $product_id, $quantity, $product_price);
     $stmt->execute();
     $stmt->close();
+    // foreach ($cartItems as $item){
+    //     $orderId_temp = $orderId;
+    //     $product_id_temp = $item['product_id'];
+    //     $quantity_temp = $item['quantity'];
+    //     $price_temp = $item['product_price'];
+    //     $stmt->bind_param("iiid", $orderId_temp, $product_id_temp, $quantity_temp, $price_temp);
+    //     $stmt->execute();
+    // }
+    // $stmt->close();
 
     // Chuyển hướng đến trang thành công
     header("Location: success.php");
