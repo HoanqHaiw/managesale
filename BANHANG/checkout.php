@@ -2,98 +2,91 @@
 session_start();
 include './php/db.php';
 
-if (!isset($_GET['product_id']) || !isset($_GET['quantity']) || !isset($_GET['product_price'])) {
-    die("❌ Thiếu thông tin sản phẩm để thanh toán.");
+// Kiểm tra nếu thông tin sản phẩm có được truyền qua GET
+if (!isset($_GET['id']) || !isset($_GET['quantity']) || !isset($_GET['size'])) {
+    die("❌ Không có thông tin sản phẩm.");
 }
 
-$product_id = intval($_GET['product_id']);
-$product_name = $_GET['product_name'];
-$product_price = floatval($_GET['product_price']);
+$product_id = intval($_GET['id']);
 $quantity = intval($_GET['quantity']);
-$totalPrice = $product_price * $quantity;
+$size = $_GET['size'];
 
-// Xử lý khi người dùng nhấn nút Thanh Toán
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $fullname = $_POST['fullname'];
-    $address = $_POST['address'];
-    $phone = $_POST['phone'];
-    $userId = $_SESSION['user_id'] ?? null;
+// Lấy thông tin sản phẩm từ cơ sở dữ liệu
+$stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ?");
+$stmt->bind_param("i", $product_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    // Thêm đơn hàng vào bảng `orders`
-    $stmt = $conn->prepare("INSERT INTO orders (user_id, fullname, address, phone, total_amount, order_status) VALUES (?, ?, ?, ?, ?, 'pending')");
-    $stmt->bind_param("isssd", $userId, $fullname, $address, $phone, $totalPrice);
-    $stmt->execute();
-    $orderId = $stmt->insert_id;
-    $stmt->close();
+if ($result->num_rows > 0) {
+    $product = $result->fetch_assoc();
+} else {
+    die("❌ Sản phẩm không tồn tại.");
+}
 
-    // Thêm sản phẩm vào bảng `orderdetails`
-    $stmt = $conn->prepare("INSERT INTO orderdetails (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("iiid", $orderId, $product_id, $quantity, $product_price);
-    $stmt->execute();
-    $stmt->close();
-    // foreach ($cartItems as $item){
-    //     $orderId_temp = $orderId;
-    //     $product_id_temp = $item['product_id'];
-    //     $quantity_temp = $item['quantity'];
-    //     $price_temp = $item['product_price'];
-    //     $stmt->bind_param("iiid", $orderId_temp, $product_id_temp, $quantity_temp, $price_temp);
-    //     $stmt->execute();
-    // }
-    // $stmt->close();
+// Lấy số lượng tồn kho từ bảng stock
+$stockStmt = $conn->prepare("SELECT quantity_in_stock FROM stock WHERE product_id = ?");
+$stockStmt->bind_param("i", $product_id);
+$stockStmt->execute();
+$stockResult = $stockStmt->get_result();
+$stock = $stockResult->fetch_assoc();
+$quantity_in_stock = $stock ? $stock['quantity_in_stock'] : 0;
 
-    // Chuyển hướng đến trang thành công
-    header("Location: success.php");
-    exit;
+// Kiểm tra xem số lượng có hợp lệ không
+if ($quantity > $quantity_in_stock) {
+    die("❌ Số lượng yêu cầu vượt quá số lượng tồn kho.");
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanh Toán</title>
-    <link rel="stylesheet" href="/BANHANG/asset/css/cart.css">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="./asset/css/base.css">
+    <link rel="stylesheet" href="./asset/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&family=Poppins:wght@200&family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
+    <div class="app">
+        <?php include '../include/header.php'; ?>
+        <div class="app__container">
+            <div class="checkout">
+                <h2>Thông Tin Đơn Hàng</h2>
+                <div class="checkout__details">
+                    <p><strong>Sản phẩm:</strong> <?php echo htmlspecialchars($product['product_name']); ?></p>
+                    <p><strong>Size:</strong> <?php echo htmlspecialchars($size); ?></p>
+                    <p><strong>Số lượng:</strong> <?php echo htmlspecialchars($quantity); ?></p>
+                    <p><strong>Giá:</strong> <?php echo number_format($product['product_price'], 0, ',', '.'); ?> VNĐ</p>
+                    <p><strong>Tổng cộng:</strong> <?php echo number_format($product['product_price'] * $quantity, 0, ',', '.'); ?> VNĐ</p>
+                </div>
 
-    <h1>Thanh Toán</h1>
-    
-    <h2>Thông Tin Đơn Hàng</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Tên sản phẩm</th>
-                <th>Giá</th>
-                <th>Số lượng</th>
-                <th>Tổng</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><?= htmlspecialchars($product_name) ?></td>
-                <td><?= number_format($product_price, 0, ',', '.') ?> VND</td>
-                <td><?= $quantity ?></td>
-                <td><?= number_format($totalPrice, 0, ',', '.') ?> VND</td>
-            </tr>
-        </tbody>
-    </table>
-    <p><strong>Tổng tiền: <?= number_format($totalPrice, 0, ',', '.') ?> VND</strong></p>
+                <!-- Form thanh toán -->
+                <div class="checkout__form">
+                    <form action="process_checkout.php" method="POST">
+                        <label for="fullname">Họ và tên:</label>
+                        <input type="text" id="fullname" name="fullname" required>
 
-    <h2>Thông Tin Khách Hàng</h2>
-    <form method="POST">
-        <label>Họ và tên:</label>
-        <input type="text" name="fullname" required>
+                        <label for="address">Địa chỉ:</label>
+                        <input type="text" id="address" name="address" required>
 
-        <label>Địa chỉ:</label>
-        <input type="text" name="address" required>
+                        <label for="phone">Số điện thoại:</label>
+                        <input type="text" id="phone" name="phone" required>
 
-        <label>Số điện thoại:</label>
-        <input type="text" name="phone" required>
+                        <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                        <input type="hidden" name="quantity" value="<?php echo $quantity; ?>">
+                        <input type="hidden" name="size" value="<?php echo $size; ?>">
+                        <input type="hidden" name="total_price" value="<?php echo $product['product_price'] * $quantity; ?>">
 
-        <button type="submit">Xác Nhận Thanh Toán</button>
-    </form>
-    <button class="homeButton" onclick="window.location.href='index.php'">Trở Về Trang Chủ</button>
-
+                        <button type="submit" class="btn btn--checkout">Xác Nhận Thanh Toán</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <?php include '../include/footer.php'; ?>
+    </div>
 </body>
-</html>

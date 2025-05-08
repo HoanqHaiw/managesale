@@ -104,9 +104,9 @@ if (session_status() === PHP_SESSION_NONE) {
                                     <li class="header__navbar-user-item"><a href="admin_orders.php">Quản Lý Đơn Hàng</a></li>
                                     <li class="header__navbar-user-item"><a href="manage_users.php">Quản Lý Người Dùng</a></li>
                                     <li class="header__navbar-user-item"><a href="push.php">Quản Lý Thêm Sản Phẩm</a></li>
+                                    <li class="header__navbar-user-item"><a href="statistics.php">Báo Cáo Thống Kê</a></li>
                                 <?php else: ?>
                                     <li class="header__navbar-user-item"><a href="edit_profile.php">Tài Khoản Của Tôi</a></li>
-                                    <li class="header__navbar-user-item"><a href="">Địa Chỉ Của Tôi</a></li>
                                     <li class="header__navbar-user-item"><a href="orders.php">Đơn Mua</a></li>
                                 <?php endif; ?>
                                 <li class="header__navbar-user-item"><a href="logout.php">Đăng Xuất</a></li>
@@ -134,8 +134,14 @@ if (session_status() === PHP_SESSION_NONE) {
                     </div>
                     <div class="header__search">
                         <div class="header__search-input-wrap">
-                            <input type="text" class="header__search-input" placeholder="Tim Kiem">
-
+                            <form method="GET" action="search.php" class="header__search-input-wrap">
+                                <input 
+                                    type="text" 
+                                    name="keyword" 
+                                    class="header__search-input" 
+                                    placeholder="Tìm Kiếm Sản Phẩm"
+                                >
+                            </form>
                             <!-- SEARCH HISTORY -->
                             <div class="header__search-history">
                                 <h3 class="header__search-history-heading">Lịch Sử Tìm Kiếm</h3>
@@ -176,7 +182,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <div class="header__cart">
         <div class="header__cart-wrap">
             <i class="header__cart-icon fa-solid fa-cart-shopping"></i>
-            <span class="header__cart-no-notice">0</span> 
+            <!-- <span class="header__cart-no-notice">0</span>  -->
             <div class="header__cart-list header__cart-list--no-cart">
                 <img src="asset/img/image1.png" alt="" class="header__cart-no-cart-img">
                 <span class="header__cart-list-no-cart-msg">Chưa có sản phẩm</span>

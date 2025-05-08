@@ -1,119 +1,98 @@
 <?php
 session_start();
+include './php/db.php';
 
-// xoá sản phẩm khỏi giỏ hàng
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_GET["action"]) && $_GET["action"] == "remove") {
-    $data = json_decode(file_get_contents("php://input"), true);
-    $_SESSION['cart'] = array_filter($_SESSION['cart'], function($item) use ($data) {
-        return $item["product_id"] != $data["item_id"];
-    });
-
-    echo json_encode(["message" => "Sản phẩm đã được xóa!"]);
+// Kiểm tra đăng nhập
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
     exit;
 }
 
-// Khởi tạo giỏ hàng nếu chưa có
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
+$user_id = $_SESSION['user_id'];
+
+// Lấy giỏ hàng của user
+$sql = "
+    SELECT 
+        cart.cart_id,
+        products.product_name,
+        products.product_price,
+        cart.size,
+        cart.quantity
+    FROM cart
+    INNER JOIN products ON cart.product_id = products.product_id
+    WHERE cart.user_id = ?
+";
+
+
+$stmt = $conn->prepare($sql);
+
+// Kiểm tra lỗi prepare
+if (!$stmt) {
+    die('Lỗi prepare SQL: ' . $conn->error);
 }
 
-// Hàm tìm sản phẩm trong giỏ hàng
-function findCartItem($productId) {
-    foreach ($_SESSION['cart'] as $index => $item) {
-        if ($item['product_id'] == $productId) {
-            return $index;
-        }
-    }
-    return -1;
-}
-
-// Xử lý các action
-if (isset($_GET['action'])) {
-    $action = $_GET['action'];
-
-    switch ($action) {
-        case 'add':
-            $data = json_decode(file_get_contents('php://input'), true);
-            if ($data) {
-                $index = findCartItem($data['product_id']);
-                if ($index !== -1) {
-                    // Nếu sản phẩm đã có, cập nhật số lượng
-                    $_SESSION['cart'][$index]['quantity'] += $data['quantity'];
-                    $_SESSION['cart'][$index]['total_price'] = $_SESSION['cart'][$index]['quantity'] * $_SESSION['cart'][$index]['product_price'];
-                } else {
-                    // Thêm mới sản phẩm
-                    $_SESSION['cart'][] = [
-                        'product_id'   => $data['product_id'],
-                        'product_name' => $data['product_name'],
-                        'product_price'=> $data['product_price'],
-                        'quantity'     => $data['quantity'],
-                        'total_price'  => $data['product_price'] * $data['quantity'],
-                    ];
-                }
-                echo json_encode(['message' => 'Đã thêm vào giỏ hàng!']);
-            }
-            exit;
-
-        case 'view':
-            header('Content-Type: application/json');
-            echo json_encode($_SESSION['cart']);
-            exit;
-
-        case 'remove':
-            $data = json_decode(file_get_contents('php://input'), true);
-            if ($data) {
-                $index = findCartItem($data['item_id']);
-                if ($index !== -1) {
-                    array_splice($_SESSION['cart'], $index, 1);
-                }
-            }
-            echo json_encode(['message' => 'Đã xóa sản phẩm khỏi giỏ hàng']);
-            exit;
-
-        case 'buy_now':
-            // Tùy chỉnh nếu cần xử lý riêng cho mua ngay
-            break;
-
-        default:
-            echo json_encode(['message' => 'Action không hợp lệ']);
-            exit;
-    }
-}
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
-
-
 
 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giỏ Hàng</title>
+    <title>Giỏ hàng của bạn</title>
     <link rel="stylesheet" href="/BANHANG/asset/css/cart.css">
 </head>
 <body>
-    <h1>Giỏ Hàng Của Bạn</h1>
-    <table>
+    <h1>🛒 Giỏ hàng</h1>
+
+    <?php if ($result->num_rows > 0): ?>
+    <table border="1" cellpadding="10" cellspacing="0">
         <thead>
             <tr>
                 <th>Tên sản phẩm</th>
-                <th>Giá</th>
+                <th>Size</th>
                 <th>Số lượng</th>
-                <th>Tổng</th>
+                <th>Giá tiền</th>
+                <th>Thành tiền</th>
                 <th>Thao tác</th>
             </tr>
         </thead>
-        <tbody id="cartItems"></tbody>
+        <tbody>
+            <?php
+            $total = 0;
+            while ($row = $result->fetch_assoc()):
+                $subtotal = $row['product_price'] * $row['quantity'];
+                $total += $subtotal;
+            ?>
+            <tr>
+                <td><?php echo htmlspecialchars($row['product_name']); ?></td>
+                <td><?php echo htmlspecialchars($row['size']); ?></td>
+                <td><?php echo htmlspecialchars($row['quantity']); ?></td>
+                <td><?php echo number_format($row['product_price'], 0, ',', '.') . '₫'; ?></td>
+                <td><?php echo number_format($subtotal, 0, ',', '.') . '₫'; ?></td>
+                <td>
+                    <form method="post" action="remove_from_cart.php" style="display:inline;">
+                        <input type="hidden" name="cart_id" value="<?php echo $row['cart_id']; ?>">
+                        <button type="submit" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
     </table>
-    <p>Tổng tiền: <span id="totalPrice">0</span></p>
-    
-    <!-- <p><strong>Tổng tiền: <span id="totalPriceStrong">0</span> VND</strong></p> -->
 
-    <button id="checkoutButton">Thanh toán</button>
+    <h3>Tổng tiền: <?php echo number_format($total, 0, ',', '.') . '₫'; ?></h3>
+
     <br>
-    <!-- Nút quay lại trang chủ -->
-    <button id="homeButton">Quay lại trang chủ</button>
-    <script src="/BANHANG/JS/cart.js"></script>
+    <a href="index.php"><button> Quay lai trang chủ</button></a>
+    <a href="checkout.php"><button>🛒 Thanh toán</button></a>
+
+    <?php else: ?>
+    <p>Giỏ hàng của bạn đang trống.</p>
+    <a href="index.php"><button>Quay lại mua sắm</button></a>
+    <?php endif; ?>
+
 </body>
 </html>

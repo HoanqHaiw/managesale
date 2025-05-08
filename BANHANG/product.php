@@ -10,7 +10,12 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
 $product_id = intval($_GET['id']);
 
+// Kiểm tra kết nối và câu truy vấn
 $stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ?");
+if ($stmt === false) {
+    die("❌ Lỗi khi chuẩn bị câu truy vấn: " . $conn->error);
+}
+
 $stmt->bind_param("i", $product_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -24,12 +29,31 @@ if ($result->num_rows > 0) {
 
 // Lấy số lượng tồn kho từ bảng stock
 $stockStmt = $conn->prepare("SELECT quantity_in_stock FROM stock WHERE product_id = ?");
+if ($stockStmt === false) {
+    die("❌ Lỗi khi chuẩn bị câu truy vấn stock: " . $conn->error);
+}
+
 $stockStmt->bind_param("i", $product_id);
 $stockStmt->execute();
 $stockResult = $stockStmt->get_result();
 $stock = $stockResult->fetch_assoc();
 $quantity_in_stock = $stock ? $stock['quantity_in_stock'] : 0;
+
+// Lấy danh sách size có sẵn cho sản phẩm này
+$sizeStmt = $conn->prepare("SELECT DISTINCT size FROM stock WHERE product_id = ?");
+if ($sizeStmt === false) {
+    die("❌ Lỗi khi chuẩn bị câu truy vấn size: " . $conn->error);
+}
+
+$sizeStmt->bind_param("i", $product_id);
+$sizeStmt->execute();
+$sizeResult = $sizeStmt->get_result();
+$sizes = [];
+while ($row = $sizeResult->fetch_assoc()) {
+    $sizes[] = $row['size'];
+}
 ?>
+
 
 <head>
     <meta charset="UTF-8">
@@ -64,6 +88,17 @@ $quantity_in_stock = $stock ? $stock['quantity_in_stock'] : 0;
                         <div class="quantity_form">
                             <label for="quantity" style="font-size: 1.6rem;">Số Lượng:</label>
                             <input type="number" id="quantity" name="quantity" min="1" value="1" max="<?php echo $quantity_in_stock; ?>" class="product__quantity">
+                        </div>
+
+                        <!-- Dropdown chọn size -->
+                        <div class="product__size">
+                            <label for="size" style="font-size: 1.6rem;">Chọn Size:</label>
+                            <select id="size" name="size" class="product__size-dropdown">
+                                <option value="">Chọn Size</option>
+                                <?php foreach ($sizes as $size): ?>
+                                    <option value="<?php echo $size; ?>"><?php echo $size; ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
 
                         <div class="product__buttons">

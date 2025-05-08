@@ -72,6 +72,7 @@ $result = $conn->query($sql);
                             <button class="home-filter__btn btn btn--primary" onclick="location.href='admin_orders.php'">Quản Lý Đơn Hàng</button>
                             <button class="home-filter__btn btn btn--primary" onclick="location.href='manage_users.php'">Quản Lý Người Dùng</button>
                             <button class="home-filter__btn btn btn--primary" onclick="location.href='push.php'">Thêm Sản Phẩm</button>
+                            <button class="home-filter__btn btn btn--primary" onclick="location.href='statistics.php'">Báo Cáo Thống Kê</button>
                         <?php else: ?>
                             <button class="home-filter__btn btn btn--primary">Phổ Biến</button>
                             <button class="home-filter__btn btn btn--primary">Mới Nhất</button>

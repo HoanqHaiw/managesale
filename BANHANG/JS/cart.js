@@ -1,58 +1,56 @@
-document.addEventListener("DOMContentLoaded", function() {
-    function loadCart() {
-        fetch("cart.php?action=view")
-            .then(response => response.json())
-            .then(data => {
-                console.log("Dữ liệu giỏ hàng nhận được:", data); // Debug
-
-                let cartItems = document.getElementById("cartItems");
-                cartItems.innerHTML = "";
-                let total = 0;
-
-                if (data.length === 0) {
-                    cartItems.innerHTML = "<tr><td colspan='5'>Giỏ hàng trống</td></tr>";
-                    document.getElementById("totalPrice").textContent = "0 VNĐ";
-                    return;
-                }
-
-                data.forEach(item => {
-                    let row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${item.product_name}</td>
-                        <td>${item.product_price} VNĐ</td>
-                        <td>${item.quantity}</td>
-                        <td>${item.total_price} VNĐ</td>
-                        <td><button class='removeItem' data-id='${item.product_id}'>Xóa</button></td>
-                    `;
-                    cartItems.appendChild(row);
-                    total += Number(item.total_price); // hoặc parseFloat cũng được
-                });
-                
-
-                document.getElementById("totalPrice").textContent = total + " VNĐ";
-            })
-            .catch(error => console.error("Lỗi khi tải giỏ hàng:", error));
-    }
-
-    document.addEventListener("click", function(e) {
-        if (e.target.classList.contains("removeItem")) {
-            let itemId = e.target.getAttribute("data-id");
-            fetch("cart.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ action: "remove", item_id: itemId })
-            })
-            .then(() => loadCart());
+// Hàm thêm vào giỏ hàng
+function addToCart(productId, productName, productPrice) {
+    fetch('/BANHANG/cart.php?action=add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            product_name: productName,
+            product_price: productPrice,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ ' + data.message); // Thông báo thành công
+        } else {
+            alert('❌ Lỗi: ' + data.message); // Báo lỗi nếu có
         }
+    })
+    .catch(error => {
+        console.error('❌ Lỗi fetch:', error);
+        alert('❌ Đã xảy ra lỗi khi thêm sản phẩm!');
     });
+}
 
-    loadCart();
-
-    document.getElementById("homeButton").addEventListener("click", function () {
-        window.location.href = "index.php";
+// Hàm mua ngay
+function buyNow(productId, productName, productPrice) {
+    fetch('/BANHANG/cart.php?action=add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            product_name: productName,
+            product_price: productPrice,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Sau khi thêm thành công thì chuyển sang trang thanh toán
+            window.location.href = '/BANHANG/checkout.php';
+        } else {
+            alert('❌ Không thể mua ngay: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('❌ Lỗi fetch:', error);
+        alert('❌ Đã xảy ra lỗi khi mua ngay!');
     });
-
-    document.getElementById("checkoutButton").addEventListener("click", function () {
-        window.location.href = "checkout.php";
-    });
-});
+}
