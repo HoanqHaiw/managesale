@@ -38,7 +38,7 @@ $result = $conn->query($sql);
             <td><?php echo $row['order_id']; ?></td>
             <td><?php echo $row['user_id']; ?></td>
             <td><?php echo $row['order_date']; ?></td>
-            <td><?php echo number_format($row['total_amount'], 2); ?> VNĐ</td>
+            <td><?php echo number_format($row['total_amount'], 0, ',', '.'); ?> VNĐ</td>
             <td><?php echo ucfirst($row['order_status']); ?></td>
             <td>
                 <?php if ($row['order_status'] == 'pending'): ?>
@@ -52,5 +52,6 @@ $result = $conn->query($sql);
         </tr>
         <?php endwhile; ?>
     </table>
+    <a href="index.php" class="btn--home">Trở về trang chủ</a>
 </body>
 </html>

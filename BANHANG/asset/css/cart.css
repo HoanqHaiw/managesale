@@ -106,5 +106,35 @@ input {
     }
 }
 
+/* Form chọn tháng, năm và nút Xem báo cáo */
+.report-form {
+    display: flex;
+    align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+    gap: 15px; /* Khoảng cách giữa các phần tử */
+    justify-content: center; /* Căn giữa các phần tử trên hàng ngang */
+    margin-bottom: 20px; /* Khoảng cách giữa form và các phần tử khác */
+}
 
+.report-form label {
+    font-size: 1rem; /* Điều chỉnh kích thước font cho label */
+    margin: 0; /* Loại bỏ khoảng cách thừa */
+}
+
+.report-form select, .report-form button {
+    padding: 8px 12px; /* Điều chỉnh kích thước của các select và button */
+    font-size: 1rem; /* Điều chỉnh kích thước font */
+    border-radius: 5px; /* Bo tròn các góc */
+    border: 1px solid #ddd; /* Đường viền */
+}
+
+.report-form button {
+    background-color: #ee4d2d;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.report-form button:hover {
+    background-color: #d84315;
+}
 

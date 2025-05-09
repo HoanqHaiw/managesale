@@ -1,75 +1,51 @@
-CREATE DATABASE myphamstore;
-USE myphamstore;
-
--- Bảng users lưu trữ thông tin người dùng
-CREATE TABLE users (
-    user_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    fullname VARCHAR(100),
-    phone VARCHAR(15),
-    email VARCHAR(100) UNIQUE,
-    password VARCHAR(255),
-    role ENUM('member', 'admin')
+-- Tạo bảng products
+CREATE TABLE myphamstore.products (
+    product_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(150) NOT NULL,
+    product_price DECIMAL(10,2) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    image VARCHAR(255) NOT NULL
 );
 
--- Bảng products lưu trữ thông tin sản phẩm
-CREATE TABLE products (
-    product_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    product_name VARCHAR(150),
-    product_price DECIMAL(10,2),
-    category VARCHAR(100),
-    image VARCHAR(255)
+-- Tạo bảng users
+CREATE TABLE myphamstore.users (
+    user_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(100) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('member', 'admin') NOT NULL DEFAULT 'member'
 );
 
--- Bảng stock lưu trữ số lượng tồn kho của sản phẩm
-CREATE TABLE stock (
-    stock_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    product_id INT(11),
-    quantity_in_stock INT(11) DEFAULT 0,
+-- Tạo bảng stock
+CREATE TABLE myphamstore.stock (
+    stock_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    product_id INT(11) NOT NULL,
+    quantity_in_stock INT(11) NOT NULL,
+    size VARCHAR(50) NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 );
 
--- Bảng cart lưu trữ thông tin giỏ hàng của người dùng
-CREATE TABLE cart (
-    cart_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    user_id INT(11),
-    product_id INT(11),
-    quantity INT(11),
+-- Tạo bảng cart
+CREATE TABLE myphamstore.cart (
+    cart_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    product_id INT(11) NOT NULL,
+    size VARCHAR(10) NOT NULL,
+    quantity INT(11) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 );
 
--- Bảng orders lưu trữ thông tin đơn hàng của người dùng
-CREATE TABLE orders (
-    order_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    user_id INT(11),
-    fullname VARCHAR(100),
-    address TEXT,
-    phone VARCHAR(15),
-    total_amount DECIMAL(10,2),
-    order_status ENUM('pending', 'processing', 'completed', 'cancelled'),
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
--- Bảng orderdetails lưu trữ chi tiết đơn hàng
-CREATE TABLE orderdetails (
-    order_detail_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    order_id INT(11),
-    product_id INT(11),
-    quantity INT(11),
-    price DECIMAL(10,2),
-    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
-);
-
--- Bảng payments lưu trữ thông tin thanh toán của người dùng
-CREATE TABLE payments (
-    payment_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    user_id INT(11),
-    fullname VARCHAR(100),
-    address TEXT,
-    phone VARCHAR(15),
-    total_amount DECIMAL(10,2),
-    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+-- Tạo bảng orders
+CREATE TABLE myphamstore.orders (
+    order_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    fullname VARCHAR(100) NOT NULL,
+    address TEXT NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    order_status ENUM('pending', 'processing', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+    order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

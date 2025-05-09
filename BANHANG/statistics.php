@@ -56,11 +56,30 @@ function getMonthlyStats($month, $year) {
     ];
 }
 
+function getYearlyRevenue($year) {
+    global $conn;
+
+    // Tổng doanh thu của cả năm
+    $yearlyRevenueQuery = "
+        SELECT SUM(total_amount) AS total_revenue
+        FROM orders
+        WHERE YEAR(order_date) = $year
+    ";
+    $yearlyRevenueResult = mysqli_query($conn, $yearlyRevenueQuery);
+    if (!$yearlyRevenueResult) {
+        die("Lỗi truy vấn doanh thu năm: " . mysqli_error($conn));
+    }
+    $yearlyRevenue = mysqli_fetch_assoc($yearlyRevenueResult)['total_revenue'] ?? 0;
+
+    return $yearlyRevenue;
+}
+
 // Xử lý ngày tháng
 $month = isset($_GET['month']) ? $_GET['month'] : date('m'); // Mặc định là tháng hiện tại
 $year = isset($_GET['year']) ? $_GET['year'] : date('Y');   // Mặc định là năm hiện tại
 
 $stats = getMonthlyStats($month, $year);
+$yearlyRevenue = getYearlyRevenue($year);
 ?>
 
 <!DOCTYPE html>
@@ -74,8 +93,29 @@ $stats = getMonthlyStats($month, $year);
 <body>
     <h1>Báo Cáo Thống Kê - Tháng <?php echo $month; ?>, Năm <?php echo $year; ?></h1>
 
+    <!-- Chọn tháng và năm -->
+    <form action="" method="GET" class="report-form">
+    <label for="month">Chọn tháng:</label>
+    <select name="month" id="month">
+        <?php for ($i = 1; $i <= 12; $i++): ?>
+            <option value="<?php echo $i; ?>" <?php echo ($i == $month) ? 'selected' : ''; ?>>Tháng <?php echo $i; ?></option>
+        <?php endfor; ?>
+    </select>
+
+    <label for="year">Chọn năm:</label>
+    <select name="year" id="year">
+        <?php for ($i = 2020; $i <= date('Y'); $i++): ?>
+            <option value="<?php echo $i; ?>" <?php echo ($i == $year) ? 'selected' : ''; ?>>Năm <?php echo $i; ?></option>
+        <?php endfor; ?>
+    </select>
+
+    <button type="submit">Xem báo cáo</button>
+</form>
+
+
     <h2>Doanh Thu: <?php echo number_format($stats['total_revenue'], 0, ',', '.'); ?> VNĐ</h2>
     <h2>Số Lượng Đơn Hàng: <?php echo $stats['total_orders']; ?> đơn</h2>
+    <h2>Tổng Doanh Thu Cả Năm <?php echo $year; ?>: <?php echo number_format($yearlyRevenue, 0, ',', '.'); ?> VNĐ</h2>
 
     <h3>Sản Phẩm Bán Chạy Nhất</h3>
     <table>

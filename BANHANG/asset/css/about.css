@@ -1,0 +1,94 @@
+/* Reset cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Header */
+.site-header {
+    background-color: #333;
+    padding: 20px 0;
+    color: #fff;
+}
+
+.site-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 20px;
+}
+
+.logo {
+    font-size: 1.8em;
+}
+
+.navigation a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 1em;
+}
+
+.navigation a:hover {
+    text-decoration: underline;
+}
+
+/* Slider */
+.slider {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    margin: 20px auto;
+}
+
+.slides {
+    display: flex;
+    width: 300%;
+    animation: slide 12s infinite;
+}
+
+.slides img {
+    width: 100%;
+    height: auto;
+}
+
+/* About Text */
+.about-text {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.about-text h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.about-text p {
+    font-size: 1.2em;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Footer */
+.site-footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* Animation cho slider */
+@keyframes slide {
+    0% { transform: translateX(0%); }
+    30% { transform: translateX(0%); }
+    33% { transform: translateX(-100%); }
+    63% { transform: translateX(-100%); }
+    66% { transform: translateX(-200%); }
+    96% { transform: translateX(-200%); }
+    100% { transform: translateX(0%); }
+}

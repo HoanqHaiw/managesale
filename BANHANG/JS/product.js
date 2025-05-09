@@ -3,6 +3,34 @@
 document.addEventListener('DOMContentLoaded', function () {
     const buyNowBtn = document.getElementById('buyNow');
     const addToCartBtn = document.getElementById('addToCart');
+    const sizeSelect = document.getElementById('size');
+    const stockQuantityText = document.getElementById('stockQuantity');
+    const quantityInput = document.getElementById('quantity');
+
+    if (sizeSelect) {
+        sizeSelect.addEventListener('change', function () {
+            const selectedSize = this.value;
+            if (selectedSize && sizesStock[selectedSize] !== undefined) {
+                const availableStock = sizesStock[selectedSize];
+                stockQuantityText.textContent = availableStock;
+                quantityInput.max = availableStock;
+                quantityInput.value = 1;
+
+                if (availableStock === 0) {
+                    alert('❌ Size này đã hết hàng!');
+                }
+            } else {
+                // Nếu chưa chọn size hoặc size không tồn tại
+                let totalStock = 0;
+                for (let size in sizesStock) {
+                    totalStock += parseInt(sizesStock[size]);
+                }
+                stockQuantityText.textContent = totalStock;
+                quantityInput.max = totalStock;
+                quantityInput.value = 1;
+            }
+        });
+    }
 
     if (buyNowBtn) {
         buyNowBtn.addEventListener('click', function () {
@@ -42,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.text())
             .then(data => {
                 console.log(data);
-                window.location.href = '/BANHANG/cart.php'; // Redirect sau khi thêm thành công
+                window.location.href = '/BANHANG/cart.php';
             })
             .catch(error => {
                 console.error('Error:', error);

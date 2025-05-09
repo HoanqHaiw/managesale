@@ -37,11 +37,12 @@ $result = $stmt->get_result();
         <tr>
             <td><?php echo $row['order_id']; ?></td>
             <td><?php echo $row['order_date']; ?></td>
-            <td><?php echo number_format($row['total_amount'], 2); ?> VNĐ</td>
+            <td><?php echo number_format($row['total_amount'], 0, ',', '.'); ?> VNĐ</td>
             <td><?php echo ucfirst($row['order_status']); ?></td>
             <td><a href="order_detail.php?order_id=<?php echo $row['order_id']; ?>">Xem</a></td>
         </tr>
         <?php endwhile; ?>
     </table>
+    <a href="index.php" class="btn--home">Trở về trang chủ</a>
 </body>
 </html>

@@ -58,6 +58,14 @@ $result = $conn->query($sql);
                                 <a href="/BANHANG/category.php" class="category-item__link">Áo</a>
                             </li>
                         </ul>
+                        <h3 class="category__heading">
+                        <i class="fa-solid fa-address-card"></i>
+                            About Us
+                        </h3>
+                        <ul class="category-list">
+                            <li class="category-item">
+                                <a href="/BANHANG/about_us.php" class="category-item__link">Về Chúng Tôi</a>
+                            </li>
                     </nav>
                 </div>
 
@@ -73,6 +81,7 @@ $result = $conn->query($sql);
                             <button class="home-filter__btn btn btn--primary" onclick="location.href='manage_users.php'">Quản Lý Người Dùng</button>
                             <button class="home-filter__btn btn btn--primary" onclick="location.href='push.php'">Thêm Sản Phẩm</button>
                             <button class="home-filter__btn btn btn--primary" onclick="location.href='statistics.php'">Báo Cáo Thống Kê</button>
+                            <button class="home-filter__btn btn btn--primary" onclick="location.href='view_stock.php'">Quản Lý Kho Hàng</button>
                         <?php else: ?>
                             <button class="home-filter__btn btn btn--primary">Phổ Biến</button>
                             <button class="home-filter__btn btn btn--primary">Mới Nhất</button>
