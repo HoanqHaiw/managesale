@@ -58,14 +58,21 @@ $result = $conn->query($sql);
                                 <a href="/BANHANG/category.php" class="category-item__link">Áo</a>
                             </li>
                         </ul>
-                        <h3 class="category__heading">
-                        <i class="fa-solid fa-address-card"></i>
-                            About Us
-                        </h3>
-                        <ul class="category-list">
-                            <li class="category-item">
-                                <a href="/BANHANG/about_us.php" class="category-item__link">Về Chúng Tôi</a>
-                            </li>
+<?php if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'): ?>
+    <h3 class="category__heading">
+        <i class="fa-solid fa-address-card"></i>
+        About Us
+    </h3>
+    <ul class="category-list">
+        <li class="category-item">
+            <a href="/BANHANG/about_us.php" class="category-item__link">Về Chúng Tôi</a>
+        </li>
+        <li class="category-item">
+            <a href="/BANHANG/contact.php" class="category-item__link">Liên Hệ</a>
+        </li>
+    </ul>
+<?php endif; ?>
+
                     </nav>
                 </div>
 

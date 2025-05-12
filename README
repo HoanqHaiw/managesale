@@ -1,51 +1,9 @@
--- Tạo bảng products
-CREATE TABLE myphamstore.products (
-    product_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    product_name VARCHAR(150) NOT NULL,
-    product_price DECIMAL(10,2) NOT NULL,
-    category VARCHAR(100) NOT NULL,
-    image VARCHAR(255) NOT NULL
-);
 
--- Tạo bảng users
-CREATE TABLE myphamstore.users (
-    user_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    fullname VARCHAR(100) NOT NULL,
-    phone VARCHAR(15) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('member', 'admin') NOT NULL DEFAULT 'member'
-);
-
--- Tạo bảng stock
-CREATE TABLE myphamstore.stock (
-    stock_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    product_id INT(11) NOT NULL,
-    quantity_in_stock INT(11) NOT NULL,
-    size VARCHAR(50) NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
-);
-
--- Tạo bảng cart
-CREATE TABLE myphamstore.cart (
-    cart_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    user_id INT(11) NOT NULL,
-    product_id INT(11) NOT NULL,
-    size VARCHAR(10) NOT NULL,
-    quantity INT(11) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
-);
-
--- Tạo bảng orders
-CREATE TABLE myphamstore.orders (
-    order_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    user_id INT(11) NOT NULL,
-    fullname VARCHAR(100) NOT NULL,
-    address TEXT NOT NULL,
-    phone VARCHAR(15) NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL,
-    order_status ENUM('pending', 'processing', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
-    order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
+-- follow me in my ins : https://www.instagram.com/just1n_hoanq/
+Step after download 
+step 1: extract the file
+step 2: open xampp and start apache and mysql
+step 3: open phpmyadmin
+step 4: create a new database with the name myphamstore
+step 5: import the file myphamstore.sql
+step 6: open vscode and run the file index.php

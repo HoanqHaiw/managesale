@@ -12,7 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <nav class="header__navbar">
                     <ul class="header__navbar-list">
                         <li class="header__navbar-item header__navbar-item--has-qr header__navbar-item--separate">
-                            Vào Cửa Hàng Mỹ Phẩm Justin Hoàng
+                            Vào Cửa Hàng Quần Áo Justin Hoàng
 
                             <!-- HEADER QR CODE -->
 
@@ -52,8 +52,8 @@ if (session_status() === PHP_SESSION_NONE) {
                                             <a href="" class="header__notify-link">
                                             <img src="/BANHANG/asset/img/sp2.png" alt="" class="header__notify-img">
                                               <div class="header__notify-info">
-                                                <span class="header__notify-name">Mỹ Phẩm Chính Hãng</span>
-                                                <span class="header__notify-descriotion"> Mô Tả Mỹ Phẩm Chính Hãng</span>
+                                                <span class="header__notify-name"> Quần Áo Chính Hãng</span>
+                                                <span class="header__notify-descriotion"> Mô Tả Quần Áo Chính Hãng</span>
                                               </div>  
                                             </a>
                                         </li>
@@ -62,7 +62,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                             <img src="/BANHANG/asset/img/sp3.png" alt="" class="header__notify-img">
                                               <div class="header__notify-info">
                                                 <span class="header__notify-name">Mỹ Phẩm Chính Hãng</span>
-                                                <span class="header__notify-descriotion"> Mô Tả Mỹ Phẩm Chính Hãng</span>
+                                                <span class="header__notify-descriotion"> Mô Tả Quần Áo Chính Hãng</span>
                                               </div>  
                                             </a>
                                         </li>
@@ -71,7 +71,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                             <img src="/BANHANG/asset/img/sp4.png" alt="" class="header__notify-img">
                                               <div class="header__notify-info">
                                                 <span class="header__notify-name">Mỹ Phẩm Chính Hãng</span>
-                                                <span class="header__notify-descriotion"> Mô Tả Mỹ Phẩm Chính Hãng</span>
+                                                <span class="header__notify-descriotion"> Mô Tả Quần Áo Chính Hãng</span>
                                               </div>  
                                             </a>
                                         </li>

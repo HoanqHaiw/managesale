@@ -1,94 +1,189 @@
-/* Reset cơ bản */
-* {
+body {
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
-
-/* Header */
-.site-header {
-    background-color: #333;
-    padding: 20px 0;
-    color: #fff;
-}
-
-.site-header .container {
+html, body {
+    height: 100%;
+    margin: 0;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: auto;
-    padding: 0 20px;
+    flex-direction: column;
 }
 
-.logo {
-    font-size: 1.8em;
+/* Main nội dung sẽ chiếm hết phần còn lại */
+main {
+    flex: 1;
 }
 
-.navigation a {
-    color: #fff;
+header {
+    background-color: #ee4d2d;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+header a {
+    color: white;
+    margin: 0 15px;
     text-decoration: none;
-    margin-left: 20px;
-    font-size: 1em;
+    font-size: 18px;
 }
 
-.navigation a:hover {
+header a:hover, header a.active {
+    color: #131312;
     text-decoration: underline;
 }
 
-/* Slider */
 .slider {
     width: 100%;
     overflow: hidden;
-    position: relative;
-    margin: 20px auto;
-}
-
-.slides {
-    display: flex;
-    width: 300%;
-    animation: slide 12s infinite;
+    margin-top: 20px;
 }
 
 .slides img {
     width: 100%;
-    height: auto;
+    display: block;
 }
 
-/* About Text */
 .about-text {
+    padding: 30px;
     text-align: center;
-    padding: 40px 20px;
+    background-color: #f9f9f9;
 }
 
 .about-text h2 {
-    font-size: 2em;
-    margin-bottom: 20px;
+    font-size: 32px;
+    margin-bottom: 10px;
 }
 
 .about-text p {
-    font-size: 1.2em;
-    max-width: 800px;
-    margin: 0 auto;
+    font-size: 18px;
     line-height: 1.6;
 }
 
-/* Footer */
-.site-footer {
-    background-color: #333;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-    margin-top: 40px;
+.about-gallery {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 30px 0;
+    background-color: #fff;
 }
 
-/* Animation cho slider */
+.about-gallery img {
+    width: 500px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.about-gallery img:hover {
+    transform: scale(1.05);
+}
+
+.product-section-title {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.product-section-title h3 {
+    font-size: 28px;
+}
+
+.products {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 30px;
+}
+
+.product-item {
+    width: 200px;
+    text-align: center;
+}
+
+.product-item img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-item img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+footer {
+    background-color: #ee4d2d;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 50px;
+}
+/* Slide */
+.slider {
+    width: 80%;
+    margin: 20px auto;
+    overflow: hidden;
+    position: relative;
+}
+.slides {
+    display: flex;
+    width: 300%;
+    animation: slide 9s infinite;
+}
+.slides img {
+    width: 100%;
+    height: 700px;
+    object-fit: cover;
+}
 @keyframes slide {
-    0% { transform: translateX(0%); }
-    30% { transform: translateX(0%); }
-    33% { transform: translateX(-100%); }
-    63% { transform: translateX(-100%); }
-    66% { transform: translateX(-200%); }
-    96% { transform: translateX(-200%); }
-    100% { transform: translateX(0%); }
+    0% {margin-left: 0;}
+    33% {margin-left: -100%;}
+    66% {margin-left: -200%;}
+    100% {margin-left: 0;}
+}
+.slider-text {
+    width: 80%;
+    margin: 20px auto;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 20px; /* hoặc chỉnh tùy ý */
+}
+/* contact */
+.contact-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+}
+
+.contact-form input,
+.contact-form textarea,
+.contact-form button {
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.contact-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+footer {
+    background: #ee4d2d;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
 }
